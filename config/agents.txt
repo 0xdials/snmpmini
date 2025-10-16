@@ -1,0 +1,3 @@
+--agent-udpv4-endpoint=127.0.0.1:161
+--agent-udpv4-endpoint=127.0.0.2:161
+--agent-udpv4-endpoint=127.0.0.3:161
