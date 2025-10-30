@@ -1,4 +1,4 @@
-IMAGE=snmpsim:dev
+IMAGE=snmpmini:dev
 DATASETS=$(PWD)/datasets
 CONFIG=$(PWD)/config
 SCRIPTS=$(PWD)/scripts
@@ -25,12 +25,15 @@ run-v3:
 		-p 161:161/udp \
 		-v $(DATASETS):/data:ro \
 		$(IMAGE) \
+		--agent-udpv4-endpoint=0.0.0.0:161 \
 		--data-dir=/data \
 		--v3-user=snmpsim \
 		--v3-auth-key=authpassword \
 		--v3-priv-key=privpassword \
 		--v3-auth-proto=SHA \
-		--v3-priv-proto=AES
+		--v3-priv-proto=AES \
+		--v3-context-name=demo \
+		--debug=all
 
 logs:
 	docker logs -f snmpmini
