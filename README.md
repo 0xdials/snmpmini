@@ -1,6 +1,6 @@
 # snmpmini: A Containerized SNMP Simulator (snmpsim)
 
-This project packages [snmpsim](https://github.com/etingof/snmpsim) (v0.4.7) with [pysnmp](https://github.com/etingof/pysnmp) (v4.4.12) into a minimal container for easy SNMP device simulation, testing, and integration.
+This project packages [snmpsim](https://github.com/etingof/snmpsim) with [pysnmp](https://github.com/etingof/pysnmp) into a minimal container for easy SNMP device simulation, testing, and integration.
 
 ## Features
 
@@ -130,6 +130,3 @@ docker run --rm -it \
 
 The container healthcheck uses Python’s stdlib to send a minimal SNMP v2c GET request for sysUpTime over UDP to `127.0.0.1:161` and validates any response.
 
----
-
-Enjoy your SNMP simulation with snmpmini!
