@@ -26,10 +26,13 @@ make build
 make run
 ```
 
-- Binds UDP port 161 on localhost
-- Uses dataset from `datasets/demo.snmprec` (mounted read-only)
-- Try an SNMP walk:  
-  `snmpwalk -v2c -c public -ObentU 127.0.0.1:161`
+This runs the container with the default settings, which means SNMP v2 by default. You don’t have to supply any special flags, just run it and it listens on UDP port 161 using the dataset in `datasets/demo.snmprec` (mounted read-only).
+
+You can test it with (ships with demo.snmprec):
+
+```
+snmpwalk -v2c -c demo -ObentU 127.0.0.1:161
+```
 
 ### Run multiple agents (on 127.0.0.1, 127.0.0.2, 127.0.0.3)
 
@@ -46,12 +49,13 @@ make run-multi
 make run-v3
 ```
 
-- Default v3 user: `snmpsim`
-- Authentication key: `authpassword`
-- Privacy key: `privpassword`
-- Uses SHA for auth and AES for privacy
-- You can change algorithms, e.g.,  
-  `--v3-auth-proto=SHA256 --v3-priv-proto=AES192`
+If you want to run SNMP v3 instead, you have to explicitly supply the v3 flags when running the container since the image itself defaults to v2. For example:
+
+```sh
+docker run <image> --v3-user=snmpsim --v3-auth-key=authpassword --v3-priv-key=privpassword
+```
+
+Same default user and keys as before, but now you get proper SNMP v3 handling. The container figures out based on the flags you pass whether to do v2 or v3.
 
 ### Use variation modules
 
@@ -63,7 +67,17 @@ docker run --rm -p 161:161/udp \
   --variation-modules=numeric,notification --data-dir=/data
 ```
 
-Dataset lines can annotate modules, e.g., to generate a notification:  
+---
+
+### TL;DR
+
+- The container defaults to running SNMP v2 if you don’t specify any SNMP v3 flags.
+- If you want SNMP v3, add the `--v3-user` and the related flags at runtime.
+- No need for separate images or complicated setups.
+- Just one image, one codebase, less hassle.
+
+
+Dataset lines can annotate modules, e.g., to generate a notification:
 `.1.3.6.1.6.3.1.1.4.1.0|<notification>|IF-MIB::linkDown`
 
 ### Record a live device
@@ -129,4 +143,3 @@ docker run --rm -it \
 ## Healthcheck
 
 The container healthcheck uses Python’s stdlib to send a minimal SNMP v2c GET request for sysUpTime over UDP to `127.0.0.1:161` and validates any response.
-

@@ -27,6 +27,7 @@ HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \
     try: data=s.recv(4096); sys.exit(0 if data else 1); \
     except Exception: sys.exit(1)"
 
-ENTRYPOINT ["snmpsim-command-responder"]
-
-CMD ["--agent-udpv4-endpoint=0.0.0.0:161", "--data-dir", "/data"]
+COPY entrypoint.sh /entrypoint.sh
+USER 10001
+ENTRYPOINT ["/entrypoint.sh"]
+CMD []
