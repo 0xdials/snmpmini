@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir snmpsim pysnmp pyasn1 pyasn1-modules
 
 RUN mkdir -p /app/config /app/datasets /app/scripts && chown -R 10001:10001 /app
 
-COPY --chown=10001:10001 datasets/demo.snmprec /app/datasets/demo.snmprec
+COPY datasets /data
 COPY --chown=10001:10001 config/agents.txt /app/config/agents.txt
 COPY --chown=10001:10001 scripts/smoke_udp.py /app/scripts/smoke_udp.py
 

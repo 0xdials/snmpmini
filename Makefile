@@ -9,13 +9,11 @@ build:
 run:
 	docker run --name snmpmini --rm \
 		-p 161:161/udp \
-		-v $(DATASETS):/data:ro \
 		$(IMAGE)
 
 run-multi:
 	docker run --name snmpmini --rm \
 		-p 161:161/udp \
-		-v $(DATASETS):/data:ro \
 		-v $(CONFIG):/app/config:ro \
 		$(IMAGE) \
 		--args-from-file=/app/config/agents.txt --data-dir=/data
@@ -23,7 +21,6 @@ run-multi:
 run-v3:
 	docker run --name snmpmini --rm \
 		-p 161:161/udp \
-		-v $(DATASETS):/data:ro \
 		$(IMAGE) \
 		--agent-udpv4-endpoint=0.0.0.0:161 \
 		--data-dir=/data \

@@ -14,27 +14,40 @@ This project packages [snmpsim](https://github.com/etingof/snmpsim) with [pysnmp
 
 ## Quickstart
 
-### Build the image
+### Using the image from GHCR
+
+Run the container. The default is SNMP v2.
 
 ```sh
-make build
+docker run --rm -p 161:161/udp ghcr.io/yourorg/snmpmini:latest
 ```
 
-### Run SNMP v2c agent (read-only dataset)
+Test with:
 
 ```sh
-make run
-```
-
-This runs the container with the default settings, which means SNMP v2 by default. You don’t have to supply any special flags, just run it and it listens on UDP port 161 using the dataset in `datasets/demo.snmprec` (mounted read-only).
-
-You can test it with (ships with demo.snmprec):
-
-```
 snmpwalk -v2c -c demo -ObentU 127.0.0.1:161
 ```
 
-### Run multiple agents (on 127.0.0.1, 127.0.0.2, 127.0.0.3)
+### Run SNMP v3
+
+Run with explicit SNMP v3 flags:
+
+```sh
+docker run --rm -p 161:161/udp ghcr.io/yourorg/snmpmini:latest \
+  --agent-udpv4-endpoint=0.0.0.0:161 \
+  --data-dir=/data \
+  --v3-user=snmpsim \
+  --v3-auth-key=authpassword \
+  --v3-priv-key=privpassword
+```
+
+Test with:
+
+```sh
+snmpwalk -v3 -u snmpsim -l authPriv -a MD5 -A authpassword -x DES -X privpassword 127.0.0.1:161
+```
+
+### Running multiple agents
 
 ```sh
 make run-multi
@@ -71,13 +84,11 @@ docker run --rm -p 161:161/udp \
 
 ### TL;DR
 
-- The container defaults to running SNMP v2 if you don’t specify any SNMP v3 flags.
-- If you want SNMP v3, add the `--v3-user` and the related flags at runtime.
-- No need for separate images or complicated setups.
-- Just one image, one codebase, less hassle.
+- Defaults to SNMP v2 unless you provide SNMP v3 flags.
+- Map UDP port 161 (`-p 161:161/udp`) to access the service.
+- One image, one codebase; no special setup.
 
-
-Dataset lines can annotate modules, e.g., to generate a notification:
+Dataset lines can annotate modules, e.g., to generate a notification:  
 `.1.3.6.1.6.3.1.1.4.1.0|<notification>|IF-MIB::linkDown`
 
 ### Record a live device
